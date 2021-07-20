@@ -61,8 +61,10 @@ class GithubCodeElement:
         if (isinstance(word, Tag)) :
             self.word = word.get_text(strip=True)
 
-        if (isinstance(word, NavigableString) and ('\n' != word)) :
+        if (isinstance(word, NavigableString)) :
             self.word = word
+            if ('\n' == self.word):
+                self.word = ' '
 
 class BadUrlException(Exception):
     pass
