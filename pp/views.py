@@ -1,6 +1,8 @@
+from mks_pretty_printer.settings import BASE_DIR
 from django.http.response import HttpResponseBadRequest
 from django.template.response import TemplateResponse
 from pp.models import BadUrlException, GitHubCode
+import os
 
 # Create your views here.
 def pretty_print(request):
@@ -8,8 +10,8 @@ def pretty_print(request):
     try:
         gitHubCode = GitHubCode(request.GET.get('url')).open()
         lines = gitHubCode.lines()
-
-        styles = open("./pp/templates/_style.html", 'r').read().replace('\n', '')
+        styleHtmlFile = os.path.join(os.path.dirname(__file__), 'templates', '_style.html')
+        styles = open(styleHtmlFile, 'r').read().replace('\n', '')
         return TemplateResponse(
             request,
             "_script.js",
