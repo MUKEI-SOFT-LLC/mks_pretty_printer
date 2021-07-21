@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup, Tag, NavigableString
 
 class GitHubCode :
     def __init__(self, url):
-        if (not(url.startswith('https://github.com/'))):
+        if (not(url) or not(url.startswith('https://github.com/'))):
             raise BadUrlException('Bad url was requested.');
         self.github_url = url
         self.start_line = 1
