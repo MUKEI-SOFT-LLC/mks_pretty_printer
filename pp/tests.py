@@ -49,7 +49,7 @@ class GithubCodeElementTestCase(TestCase):
         self.assertEqual(GithubCodeElement(NavigableString('abcde')).word, 'abcde')
 
     def test_about_navigable_string_only_line_feed(self):
-        self.assertEqual(GithubCodeElement(NavigableString('\n')).word, '')
+        self.assertEqual(GithubCodeElement(NavigableString('\n')).word, ' ')
 
     def test_about_unknown_target(self):
         self.assertEqual(GithubCodeElement(DummyPageElement()).word, '')
