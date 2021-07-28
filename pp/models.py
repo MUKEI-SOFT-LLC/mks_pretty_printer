@@ -44,7 +44,7 @@ class GitHubCode :
         return self
 
     def lines(self): 
-        return list(map(lambda l : l.line_as_string(), self.codes))
+        return list(map(lambda l : l.line_as_string().replace('\\n', '\\\\n'), self.codes))
 
 
 class GithubCodeLine:
