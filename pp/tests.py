@@ -42,8 +42,8 @@ class DummyPageElement(PageElement):
 class GithubCodeElementTestCase(TestCase):
     def test_about_tagged_element(self):
         tag = Tag(name='span')
-        tag.string = 'abcde'
-        self.assertEqual(GithubCodeElement(tag).word, 'abcde')
+        tag.string = 'abcde '
+        self.assertEqual(GithubCodeElement(tag).word, 'abcde ')
 
     def test_about_navigable_string(self):
         self.assertEqual(GithubCodeElement(NavigableString('abcde')).word, 'abcde')

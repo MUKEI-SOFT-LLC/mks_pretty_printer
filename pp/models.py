@@ -59,7 +59,7 @@ class GithubCodeElement:
     def __init__(self, word) :
         self.word = ''
         if (isinstance(word, Tag)) :
-            self.word = word.get_text(strip=True)
+            self.word = word.get_text(strip=False)
 
         if (isinstance(word, NavigableString)) :
             self.word = word
