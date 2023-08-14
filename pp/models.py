@@ -3,6 +3,7 @@ from selenium import webdriver
 
 DEFAULT_OPTION = webdriver.ChromeOptions()
 DEFAULT_OPTION.add_argument('--headless')
+DEFAULT_OPTION.add_argument('--no-sandbox')
 
 class GitHubCode :
     def __init__(self, url):
