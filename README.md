@@ -17,6 +17,12 @@ It can print full source code if not specified hash based line region.
 * pp.js?url=https://github.com/path/to/blob/Sample.java
  
 # How to setup 
+
+## prerequisite
+
+Download Selenium Chrome driver and install it into valid $PATH place.
+https://googlechromelabs.github.io/chrome-for-testing/
+
 ```bash
 mkdir <your_directory> && cd <your_directory>
 git clone https://github.com/MUKEI-SOFT-LLC/mks_pretty_printer

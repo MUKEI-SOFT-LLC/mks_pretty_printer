@@ -1,5 +1,8 @@
-import urllib.request 
 from bs4 import BeautifulSoup, Tag, NavigableString
+from selenium import webdriver
+
+DEFAULT_OPTION = webdriver.ChromeOptions()
+DEFAULT_OPTION.add_argument('--headless')
 
 class GitHubCode :
     def __init__(self, url):
@@ -9,6 +12,7 @@ class GitHubCode :
         self.start_line = 1
         self.end_line = None
         self.ids = []
+        self.codes = []
         fragments = self.github_url.split('#')
         if (2 == len(fragments)):
             range_array = fragments[1].split('-')
@@ -29,42 +33,28 @@ class GitHubCode :
         return self.end_line
 
     def open(self) :
-        urllib.request.HTTPError
-        try: 
-            req = urllib.request.Request(self.github_url)
-            html = urllib.request.urlopen(req)
-        except urllib.request.HTTPError as e:
-            raise BadUrlException('Bad url was requested')
-        soup = BeautifulSoup(html, "html5lib")
-        all_lines = soup.find_all("td", attrs={"class": "blob-code-inner"})
-        filtered = all_lines
-        if (self.ids) :
-            filtered = filter(lambda l: 0 < self.ids.count(l.get('id')), all_lines)
-        self.codes = list(map(lambda l : GithubCodeLine(l), filtered))
+        all_lines = self._get_codes()
+        if (1 == self.start_line and -1 == self.github_url.find('#') and not self.end_line ):
+            # all lines.
+            self.codes = all_lines
+        elif(not self.end_line and self.start_line <= len(all_lines)):
+            # specific line only.
+            self.codes.append(all_lines[self.start_line - 1])
+        else:
+            # lines selected range. ex "1-5"
+            self.codes = all_lines[self.start_line - 1:self.end_line]
         return self
 
     def lines(self): 
-        return list(map(lambda l : l.line_as_string().replace('\\n', '\\\\n'), self.codes))
-
-
-class GithubCodeLine:
-    def __init__(self, line):
-        self.line = line
-        self.words = list(map(lambda w : GithubCodeElement(w), self.line.contents))
-
-    def line_as_string(self) -> str:  
-        return ''.join(list(map(lambda w: w.word, self.words)))
-
-class GithubCodeElement:
-    def __init__(self, word) :
-        self.word = ''
-        if (isinstance(word, Tag)) :
-            self.word = word.get_text(strip=False)
-
-        if (isinstance(word, NavigableString)) :
-            self.word = word
-            if ('\n' == self.word):
-                self.word = ' '
+        return list(map(lambda l: l.replace('\\n', '\\\\n') ,self.codes))
+    
+    # declare for mock testing...
+    def _get_codes(self):
+        browser = webdriver.Chrome(options=DEFAULT_OPTION)
+        browser.get(self.github_url)
+        html = browser.page_source
+        soup = BeautifulSoup(html, "html5lib")
+        return soup.find(id = 'read-only-cursor-text-area').get_text().split('\n')
 
 class BadUrlException(Exception):
     pass

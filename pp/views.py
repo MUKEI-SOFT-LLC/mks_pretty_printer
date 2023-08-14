@@ -17,7 +17,7 @@ def pretty_print(request):
             "_script.js",
             content_type="text/javascript; charset=utf8",
             context= {
-                "lines": '\\n'.join(lines),
+                "lines": ''.join(list(map(lambda l : f'{l}\\n', lines))),
                 "start": gitHubCode.start_line,
                 "link": gitHubCode.github_url,
                 "styles": styles
