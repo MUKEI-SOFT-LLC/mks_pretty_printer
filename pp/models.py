@@ -1,9 +1,6 @@
-from bs4 import BeautifulSoup, Tag, NavigableString
-from selenium import webdriver
-
-DEFAULT_OPTION = webdriver.ChromeOptions()
-DEFAULT_OPTION.add_argument('--headless')
-DEFAULT_OPTION.add_argument('--no-sandbox')
+import urllib.request
+import json
+from bs4 import BeautifulSoup
 
 class GitHubCode :
     def __init__(self, url):
@@ -51,11 +48,17 @@ class GitHubCode :
     
     # declare for mock testing...
     def _get_codes(self):
-        browser = webdriver.Chrome(options=DEFAULT_OPTION)
-        browser.get(self.github_url)
-        html = browser.page_source
+        try: 
+            req = urllib.request.Request(self.github_url)
+            html = urllib.request.urlopen(req)
+        except urllib.request.HTTPError as e:
+            raise BadUrlException('Bad url was requested')
         soup = BeautifulSoup(html, "html5lib")
-        return soup.find(id = 'read-only-cursor-text-area').get_text().split('\n')
+        code_json = soup.find('script', attrs = {
+            'data-target': 'react-app.embeddedData',
+            'type': 'application/json',
+        })
+        return json.loads(code_json.get_text())['payload']['blob']['rawLines']
 
 class BadUrlException(Exception):
     pass
